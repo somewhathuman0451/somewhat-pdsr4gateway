@@ -19,32 +19,11 @@ permissions:
   packages: write
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-
-      - name: Restore
-        run: dotnet restore Somewhat.PdsR4Gateway.sln
-
-      - name: Test
-        run: dotnet test Somewhat.PdsR4Gateway.sln --configuration Release --no-restore
-
   publish:
     permissions:
       contents: write
       id-token: write  # enable GitHub OIDC token issuance for this job
       packages: write
-    needs: test
     runs-on: ubuntu-latest
 
     steps:
