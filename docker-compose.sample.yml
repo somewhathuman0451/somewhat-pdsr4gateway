@@ -1,0 +1,76 @@
+services:
+  mock-oidc:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /workspaces/somewhat-pdsr4gateway
+    command: dotnet run --project samples/Somewhat.PdsR4Gateway.Sample.MockOidcProvider --urls http://0.0.0.0:8083
+    volumes:
+      - ../:/workspaces
+    environment:
+      MockOidc__Issuer: http://mock-oidc:8083
+    ports:
+      - "5180:8083"
+
+  mock-pds:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /workspaces/somewhat-pdsr4gateway
+    command: dotnet run --project samples/Somewhat.PdsR4Gateway.Sample.MockPdsApi --urls http://0.0.0.0:8081
+    volumes:
+      - ../:/workspaces
+    ports:
+      - "5181:8081"
+
+  gateway:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /workspaces/somewhat-pdsr4gateway
+    command: dotnet run --project src/Somewhat.PdsR4Gateway --urls http://0.0.0.0:8080
+    volumes:
+      - ../:/workspaces
+    environment:
+      InboundAuth__Issuer: somewhat-pds-gateway
+      InboundAuth__Audience: somewhat-pds-gateway-clients
+      InboundAuth__JwtSigningKey: compose-sample-signing-key-32-chars
+      PdsApi__BaseAddress: http://mock-pds:8081/
+      PdsApi__ApiKey: sample-api-key
+      PdsApi__CertificateName: default
+      SignedJwtClient__Issuer: somewhat-pds-gateway
+      SignedJwtClient__Audience: mock-pds-api
+      SignedJwtClient__Subject: pds-gateway-compose
+      SignedJwtClient__ApiKeyClaimName: client_id
+      SignedJwtClient__Scope: pds.read
+      SignedJwtClient__TokenLifetime: 00:04:00
+      CertificateSource__DefaultCertificateName: default
+      CertificateSource__Certificates__0__Name: default
+      CertificateSource__Certificates__0__Source: PemFiles
+      CertificateSource__Certificates__0__CertificatePath: ${PDS_SIGNING_CERT_PATH:-samples/certs/dev-signing-cert.pem}
+      CertificateSource__Certificates__0__PrivateKeyPath: ${PDS_SIGNING_KEY_PATH:-samples/certs/dev-signing-key.pem}
+      ApiQueueOptions__MaxTransactionsPerSecond: "10"
+      ApiQueueOptions__MaxConcurrentRequests: "2"
+      ApiQueueOptions__MaxQueueDepth: "500"
+      GatewayAuth__EnableOidc: "true"
+      GatewayAuth__OidcAuthority: http://mock-oidc:8083
+      GatewayAuth__OidcClientId: gateway-client
+      GatewayAuth__OidcScope: gateway.api
+      GatewayAuth__RequireHttpsMetadata: "false"
+    depends_on:
+      - mock-oidc
+      - mock-pds
+    ports:
+      - "5182:8080"
+
+  demo-client:
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    working_dir: /workspaces/somewhat-pdsr4gateway
+    command: dotnet run --project samples/Somewhat.PdsR4Gateway.Sample --urls http://0.0.0.0:8082
+    volumes:
+      - ../:/workspaces
+    environment:
+      GatewayDemo__GatewayBaseAddress: http://gateway:8080
+      GatewayDemo__OidcAuthority: http://mock-oidc:8083
+      GatewayDemo__OidcClientId: demo-client
+      GatewayDemo__OidcScope: gateway.api
+      GatewayDemo__RequireHttpsMetadata: "false"
+    depends_on:
+      - mock-oidc
+      - gateway
+    ports:
+      - "5183:8082"

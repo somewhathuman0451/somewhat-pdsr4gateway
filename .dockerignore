@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+.git/
+.github/
+.local-run/
+.vscode/
+*.user
+*.suo
+*.swp
+*.tmp
+README.md

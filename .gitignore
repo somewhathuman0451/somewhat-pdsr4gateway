@@ -1,0 +1,104 @@
+# Build Folders
+[Bb]in/
+[Oo]bj/
+
+# Rider
+.idea/
+*.sln.iml
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pidb
+*.booproj
+*.svclog
+*.scc
+
+# Mono Auto Generated Files
+*.userprefs
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Visual Studio files
+.vs/
+*.vspscc
+*.vssscc
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/packages/
+.nuget/experimental/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# MSBuild
+*.props.user
+*.targets.user
+*.msi
+*.opendb
+*.VC.db
+*.VC.opendb
+
+# Visual Studio cache/options
+*.cache
+*.pdb
+*.ilk
+*.obj
+*.tmp
+*.log
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider caches
+.idea/
+*.sln.iml
+
+# DotCover
+*.dotCover
+
+# Azure DevOps
+_build/
+
+# Test result files
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# Local history
+LocalHistory/
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio temporary files
+~$*
+
+# Publish outputs
+publish/
+wwwroot/dist/
+
+# User secrets
+secrets.json
+
+# Package directories
+node_modules/
+
+# Log files
+*.log
+
+# Generated files
+*.g.cs
+*.Designer.cs
+
+**/obj/
