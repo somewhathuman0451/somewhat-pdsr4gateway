@@ -126,7 +126,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           
       - name: Tag version after manual publish
-        if: github.event_name == 'workflow_dispatch'
         shell: bash
         run: |
           version="${{ steps.version.outputs.version }}"
