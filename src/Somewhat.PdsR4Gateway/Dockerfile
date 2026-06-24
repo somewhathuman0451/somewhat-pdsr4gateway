@@ -15,8 +15,16 @@ RUN dotnet publish src/Somewhat.PdsR4Gateway/Somewhat.PdsR4Gateway.csproj -c Rel
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-ENV ASPNETCORE_URLS=http://+:8080
+ENV ASPNETCORE_URLS=http://+:8080 \
+	ASPNETCORE_ENVIRONMENT=Production \
+	DOTNET_EnableDiagnostics=0 \
+	DOTNET_RUNNING_IN_CONTAINER=true
 EXPOSE 8080
 
-COPY --from=build /app/publish .
+RUN useradd --create-home --uid 64198 --shell /usr/sbin/nologin appuser
+
+COPY --from=build --chown=appuser:appuser /app/publish .
+
+USER appuser
+
 ENTRYPOINT ["dotnet", "Somewhat.PdsR4Gateway.dll"]
