@@ -102,3 +102,4 @@ node_modules/
 *.Designer.cs
 
 **/obj/
+.local-run/
